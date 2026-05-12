@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upraszczamy Excela – Zuzanna Magoń-Buczek</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a7a45;
+    --green-light: #22a85e;
+    --green-pale: #e8f5ee;
+    --green-mid: #c4e8d2;
+    --black: #0e1412;
+    --gray: #4a5550;
+    --gray-light: #8a9990;
+    --white: #fafcfb;
+    --accent: #00c060;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    overflow-x: hidden;
+  }
+
+  /* ── LANG SWITCHER ── */
+  .lang-bar {
+    position: fixed; top: 0; right: 0; z-index: 100;
+    padding: 14px 28px;
+    display: flex; gap: 6px;
+  }
+  .lang-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: .12em;
+    padding: 6px 14px; border-radius: 100px;
+    border: 1.5px solid var(--green);
+    cursor: pointer; transition: all .2s;
+    background: transparent; color: var(--green);
+  }
+  .lang-btn.active {
+    background: var(--green); color: white;
+  }
+  .lang-btn:hover:not(.active) {
+    background: var(--green-pale);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    background: var(--green);
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 80px 64px 80px 72px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-left::after {
+    content: '';
+    position: absolute; right: -60px; top: 0; bottom: 0;
+    width: 120px;
+    background: var(--green);
+    clip-path: polygon(0 0, 0 100%, 100% 100%);
+    z-index: 2;
+  }
+
+  .brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: .16em; text-transform: uppercase;
+    color: rgba(255,255,255,.6);
+    margin-bottom: 40px;
+  }
+
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(42px, 5.5vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    color: white;
+    margin-bottom: 28px;
+  }
+
+  .hero-title span {
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.65;
+    color: rgba(255,255,255,.8);
+    max-width: 380px;
+    margin-bottom: 52px;
+  }
+
+  .cta-group { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: white; color: var(--green);
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 14px; letter-spacing: .06em;
+    padding: 15px 30px; border-radius: 100px;
+    text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 4px 20px rgba(0,0,0,.15);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.22); }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: white;
+    font-family: 'Syne', sans-serif; font-weight: 600;
+    font-size: 14px; letter-spacing: .06em;
+    padding: 15px 28px; border-radius: 100px;
+    border: 1.5px solid rgba(255,255,255,.4);
+    text-decoration: none;
+    transition: all .2s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,.1); border-color: white; }
+
+  .hero-right {
+    background: var(--white);
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: flex-start;
+    padding: 80px 72px 80px 100px;
+    position: relative;
+  }
+
+  /* decorative grid */
+  .hero-right::before {
+    content: '';
+    position: absolute;
+    top: 60px; right: 60px;
+    width: 180px; height: 180px;
+    background-image:
+      radial-gradient(circle, var(--green-mid) 1.5px, transparent 1.5px);
+    background-size: 18px 18px;
+    opacity: .6;
+  }
+
+  .excel-icon {
+    width: 80px; height: 80px;
+    background: var(--green);
+    border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .excel-icon svg { width: 44px; height: 44px; }
+
+  .stats-row {
+    display: flex; gap: 48px;
+    margin-bottom: 48px;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 48px; font-weight: 800;
+    color: var(--green);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 13px; font-weight: 400;
+    color: var(--gray-light);
+    margin-top: 6px;
+    max-width: 100px;
+    line-height: 1.4;
+  }
+
+  .tagline-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--green-pale);
+    color: var(--green);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    padding: 8px 18px; border-radius: 100px;
+  }
+  .tagline-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent); border-radius: 50%;
+  }
+
+  /* ── SERVICES ── */
+  .section {
+    padding: 100px 72px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--black);
+    margin-bottom: 60px;
+    max-width: 600px;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .service-card {
+    background: var(--white);
+    border: 1.5px solid #e0ebe5;
+    border-radius: 20px;
+    padding: 36px 32px;
+    transition: all .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--green);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .3s;
+  }
+  .service-card:hover { border-color: var(--green-mid); box-shadow: 0 12px 40px rgba(26,122,69,.08); transform: translateY(-4px); }
+  .service-card:hover::before { transform: scaleX(1); }
+
+  .service-icon {
+    width: 48px; height: 48px;
+    background: var(--green-pale);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+    font-size: 22px;
+  }
+
+  .service-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--black);
+    margin-bottom: 10px;
+  }
+
+  .service-desc {
+    font-size: 14px; font-weight: 300;
+    color: var(--gray);
+    line-height: 1.65;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .how-section {
+    background: var(--black);
+    padding: 100px 72px;
+  }
+
+  .how-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .how-section .section-label { color: var(--accent); }
+  .how-section .section-title { color: white; }
+
+  .steps-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    position: relative;
+  }
+
+  .steps-row::before {
+    content: '';
+    position: absolute;
+    top: 30px; left: calc(16.67% + 16px); right: calc(16.67% + 16px);
+    height: 1px;
+    background: linear-gradient(90deg, var(--green), var(--accent), var(--green));
+    opacity: .4;
+  }
+
+  .step { position: relative; }
+
+  .step-num {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    border: 1.5px solid var(--green-light);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 24px;
+    background: var(--black);
+    position: relative; z-index: 1;
+  }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 19px; font-weight: 700;
+    color: white;
+    margin-bottom: 12px;
+  }
+
+  .step-desc {
+    font-size: 14px; font-weight: 300;
+    color: rgba(255,255,255,.55);
+    line-height: 1.7;
+  }
+
+  /* ── CONTACT ── */
+  .contact-section {
+    padding: 100px 72px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .contact-section .section-title { margin-bottom: 32px; }
+
+  .contact-desc {
+    font-size: 16px; font-weight: 300;
+    color: var(--gray);
+    line-height: 1.75;
+    margin-bottom: 40px;
+  }
+
+  .contact-links { display: flex; flex-direction: column; gap: 16px; }
+
+  .contact-link {
+    display: flex; align-items: center; gap: 14px;
+    text-decoration: none;
+    color: var(--black);
+    font-size: 15px; font-weight: 400;
+    padding: 18px 24px;
+    background: var(--white);
+    border: 1.5px solid #e0ebe5;
+    border-radius: 14px;
+    transition: all .2s;
+  }
+  .contact-link:hover { border-color: var(--green); background: var(--green-pale); color: var(--green); }
+
+  .contact-link-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+
+  .contact-visual {
+    background: var(--green);
+    border-radius: 28px;
+    padding: 56px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-visual::before {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,.06);
+    border-radius: 50%;
+  }
+  .contact-visual::after {
+    content: '';
+    position: absolute;
+    bottom: 40px; right: 40px;
+    width: 100px; height: 100px;
+    background: rgba(255,255,255,.06);
+    border-radius: 50%;
+  }
+
+  .contact-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: rgba(255,255,255,.6);
+    margin-bottom: 12px;
+  }
+
+  .contact-bigname {
+    font-family: 'Syne', sans-serif;
+    font-size: 34px; font-weight: 800;
+    color: white;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+
+  .contact-tagline {
+    font-size: 15px; font-weight: 300;
+    color: rgba(255,255,255,.75);
+    line-height: 1.65;
+    margin-bottom: 40px;
+  }
+
+  .contact-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.15);
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: .08em;
+    padding: 8px 18px; border-radius: 100px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--black);
+    padding: 32px 72px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .footer-brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(255,255,255,.4);
+  }
+
+  .footer-copy {
+    font-size: 12px; color: rgba(255,255,255,.3);
+  }
+
+  /* ── FORM SECTION ── */
+  .form-section {
+    background: var(--green-pale);
+    padding: 100px 72px;
+  }
+
+  .form-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .form-intro .section-title { margin-bottom: 20px; }
+
+  .form-intro-desc {
+    font-size: 16px; font-weight: 300;
+    color: var(--gray);
+    line-height: 1.75;
+    margin-bottom: 32px;
+  }
+
+  .form-info-item {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 14px; color: var(--gray);
+    margin-bottom: 12px;
+  }
+  .form-info-item span:first-child { font-size: 18px; }
+
+  .contact-form {
+    background: white;
+    border-radius: 24px;
+    padding: 48px 44px;
+    box-shadow: 0 8px 48px rgba(26,122,69,.08);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .form-group.full { grid-column: 1 / -1; }
+
+  .form-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  .form-input, .form-textarea, .form-select {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1.5px solid #e0ebe5;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 300;
+    color: var(--black);
+    background: var(--white);
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+    appearance: none;
+  }
+
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(26,122,69,.1);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 130px;
+  }
+
+  .form-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5550' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 44px;
+    cursor: pointer;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 17px 32px;
+    background: var(--green);
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: .06em;
+    border: none; border-radius: 100px;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-submit:hover { background: var(--green-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,122,69,.25); }
+  .btn-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 32px 0;
+  }
+  .form-success-icon {
+    width: 64px; height: 64px;
+    background: var(--green-pale);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 20px;
+  }
+  .form-success-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+  .form-success-desc {
+    font-size: 15px; font-weight: 300;
+    color: var(--gray);
+    line-height: 1.6;
+  }
+
+  .form-error-msg {
+    display: none;
+    background: #fef3f2;
+    color: #c0392b;
+    font-size: 13px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .form-section { padding: 72px 32px; }
+    .form-inner { grid-template-columns: 1fr; gap: 40px; }
+    .form-row { grid-template-columns: 1fr; }
+    .contact-form { padding: 32px 24px; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-left > * { animation: fadeUp .7s both; }
+  .hero-left > *:nth-child(1) { animation-delay: .1s; }
+  .hero-left > *:nth-child(2) { animation-delay: .25s; }
+  .hero-left > *:nth-child(3) { animation-delay: .4s; }
+  .hero-left > *:nth-child(4) { animation-delay: .55s; }
+  .hero-right > * { animation: fadeUp .7s both; }
+  .hero-right > *:nth-child(1) { animation-delay: .35s; }
+  .hero-right > *:nth-child(2) { animation-delay: .5s; }
+  .hero-right > *:nth-child(3) { animation-delay: .65s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 100px 32px 60px; }
+    .hero-left::after { display: none; }
+    .hero-right { padding: 48px 32px 72px; }
+    .hero-right::before { display: none; }
+    .stats-row { gap: 32px; }
+    .section { padding: 72px 32px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .steps-row { grid-template-columns: 1fr; }
+    .steps-row::before { display: none; }
+    .how-section { padding: 72px 32px; }
+    .contact-section { grid-template-columns: 1fr; padding: 72px 32px; gap: 48px; }
+    footer { padding: 24px 32px; flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LANG SWITCHER -->
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('pl')">PL</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="brand">Upraszczamy Excela</div>
+    <h1 class="hero-title">
+      <span data-pl="Excel bez" data-en="Excel without">Excel bez</span><br>
+      <span data-pl="komplikacji." data-en="complications.">komplikacji.</span>
+    </h1>
+    <p class="hero-sub" data-pl="Chcesz zaoszczędzić czas i ułatwić sobie zadania w Excelu? Jestem tu, aby Ci pomóc – z wieloletnim doświadczeniem tworzę rozwiązania idealnie dopasowane do Twoich potrzeb." data-en="Want to save time and simplify your Excel tasks? I'm here to help — with years of experience I create solutions perfectly tailored to your needs.">Chcesz zaoszczędzić czas i ułatwić sobie zadania w Excelu? Jestem tu, aby Ci pomóc – z wieloletnim doświadczeniem tworzę rozwiązania idealnie dopasowane do Twoich potrzeb.</p>
+    <div class="cta-group">
+      <a href="mailto:zuzanna.magon@gmail.com" class="btn-primary">
+        ✉️ <span data-pl="Napisz do mnie" data-en="Email me">Napisz do mnie</span>
+      </a>
+      <a href="https://pl.linkedin.com/in/zuzanna-magon" target="_blank" class="btn-secondary">
+        <span data-pl="LinkedIn" data-en="LinkedIn">LinkedIn</span> →
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="excel-icon">
+      <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="44" height="44" rx="9" fill="#1a7a45"/>
+        <path d="M8 10h28v24H8z" fill="white" opacity=".15"/>
+        <line x1="8" y1="17" x2="36" y2="17" stroke="white" stroke-width="1.2" opacity=".3"/>
+        <line x1="8" y1="24" x2="36" y2="24" stroke="white" stroke-width="1.2" opacity=".3"/>
+        <line x1="22" y1="10" x2="22" y2="34" stroke="white" stroke-width="1.2" opacity=".3"/>
+        <path d="M13 14l5 5-5 5M20 24h7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="stats-row">
+      <div>
+        <div class="stat-num">6+</div>
+        <div class="stat-label" data-pl="obszarów specjalizacji" data-en="areas of expertise">obszarów specjalizacji</div>
+      </div>
+      <div>
+        <div class="stat-num">2x</div>
+        <div class="stat-label" data-pl="szybsza praca dzięki automatyzacji" data-en="faster work through automation">szybsza praca dzięki automatyzacji</div>
+      </div>
+    </div>
+
+    <div class="tagline-badge" data-pl="Excel + Google Sheets" data-en="Excel + Google Sheets">Excel + Google Sheets</div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section" id="uslugi">
+  <div class="section-label" data-pl="Co robię" data-en="What I do">Co robię</div>
+  <h2 class="section-title" data-pl="Usługi dopasowane do Twoich potrzeb" data-en="Services tailored to your needs">Usługi dopasowane do Twoich potrzeb</h2>
+
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">⚙️</div>
+      <div class="service-name" data-pl="Automatyzacja" data-en="Automation">Automatyzacja</div>
+      <div class="service-desc" data-pl="Eliminuję powtarzalne zadania, żebyś mógł skupić się na tym, co naprawdę ważne." data-en="I eliminate repetitive tasks so you can focus on what really matters.">Eliminuję powtarzalne zadania, żebyś mógł skupić się na tym, co naprawdę ważne.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔢</div>
+      <div class="service-name" data-pl="Zaawansowane formuły" data-en="Advanced formulas">Zaawansowane formuły</div>
+      <div class="service-desc" data-pl="Tworzę formuły, które upraszczają nawet najbardziej złożone obliczenia." data-en="I build formulas that simplify even the most complex calculations.">Tworzę formuły, które upraszczają nawet najbardziej złożone obliczenia.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📋</div>
+      <div class="service-name" data-pl="Formularze do danych" data-en="Data entry forms">Formularze do danych</div>
+      <div class="service-desc" data-pl="Projektuję przyjazne formularze, które sprawiają, że wprowadzanie danych jest proste i bezbłędne." data-en="I design user-friendly forms that make data entry simple and error-free.">Projektuję przyjazne formularze, które sprawiają, że wprowadzanie danych jest proste i bezbłędne.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">📊</div>
+      <div class="service-name" data-pl="Wykresy i dashboardy" data-en="Charts & dashboards">Wykresy i dashboardy</div>
+      <div class="service-desc" data-pl="Dynamiczne wykresy i interaktywne pulpity, które zamieniają dane w czytelne informacje." data-en="Dynamic charts and interactive dashboards that turn data into clear insights.">Dynamiczne wykresy i interaktywne pulpity, które zamieniają dane w czytelne informacje.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔍</div>
+      <div class="service-name" data-pl="Analiza danych" data-en="Data analysis">Analiza danych</div>
+      <div class="service-desc" data-pl="Efektywne przetwarzanie i analiza danych – wyciągam to, co dla Ciebie najważniejsze." data-en="Efficient data processing and analysis — I extract what matters most to you.">Efektywne przetwarzanie i analiza danych – wyciągam to, co dla Ciebie najważniejsze.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🔗</div>
+      <div class="service-name" data-pl="Excel + Google Sheets" data-en="Excel + Google Sheets">Excel + Google Sheets</div>
+      <div class="service-desc" data-pl="Integruję Excela z Arkuszami Google, aby zapewnić płynny i zautomatyzowany przepływ pracy." data-en="I integrate Excel with Google Sheets to ensure a smooth and automated workflow.">Integruję Excela z Arkuszami Google, aby zapewnić płynny i zautomatyzowany przepływ pracy.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="jak-to-dziala">
+  <div class="how-inner">
+    <div class="section-label" data-pl="Proces" data-en="Process">Proces</div>
+    <h2 class="section-title" data-pl="Jak to działa?" data-en="How does it work?">Jak to działa?</h2>
+
+    <div class="steps-row">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title" data-pl="Napisz maila" data-en="Send an email">Napisz maila</div>
+        <div class="step-desc" data-pl="Opisz krótko zadanie lub problem, który chcesz usprawnić w Excelu." data-en="Briefly describe the task or problem you want to improve in Excel.">Opisz krótko zadanie lub problem, który chcesz usprawnić w Excelu.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title" data-pl="Otrzymaj propozycję i wycenę" data-en="Get a proposal & quote">Otrzymaj propozycję i wycenę</div>
+        <div class="step-desc" data-pl="Przygotowuję spersonalizowane rozwiązanie i przejrzystą wycenę bez ukrytych kosztów." data-en="I prepare a personalised solution and a transparent quote with no hidden costs.">Przygotowuję spersonalizowane rozwiązanie i przejrzystą wycenę bez ukrytych kosztów.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title" data-pl="Korzystaj i oszczędzaj czas" data-en="Use it & save time">Korzystaj i oszczędzaj czas</div>
+        <div class="step-desc" data-pl="Wdrażasz gotowe rozwiązanie i cieszysz się zaoszczędzonym czasem każdego dnia." data-en="You deploy the finished solution and enjoy the time saved every day.">Wdrażasz gotowe rozwiązanie i cieszysz się zaoszczędzonym czasem każdego dnia.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="kontakt">
+  <div>
+    <div class="section-label" data-pl="Kontakt" data-en="Contact">Kontakt</div>
+    <h2 class="section-title" data-pl="Gotowy, żeby uprościć swój Excel?" data-en="Ready to simplify your Excel?">Gotowy, żeby uprościć swój Excel?</h2>
+    <p class="contact-desc" data-pl="Napisz do mnie z krótkim opisem Twojego zadania. Odpiszę szybko z propozycją rozwiązania." data-en="Write to me with a short description of your task. I'll reply quickly with a solution proposal.">Napisz do mnie z krótkim opisem Twojego zadania. Odpiszę szybko z propozycją rozwiązania.</p>
+
+    <div class="contact-links">
+      <a href="mailto:zuzanna.magon@gmail.com" class="contact-link">
+        <div class="contact-link-icon" style="background: #fef3f2;">📧</div>
+        <span>zuzanna.magon@gmail.com</span>
+      </a>
+      <a href="https://pl.linkedin.com/in/zuzanna-magon" target="_blank" class="contact-link">
+        <div class="contact-link-icon" style="background: #e8f0fe;">💼</div>
+        <span>linkedin.com/in/zuzanna-magon</span>
+      </a>
+      <a href="https://share.google/oxyPLKeLPUDsAd920" target="_blank" class="contact-link">
+        <div class="contact-link-icon" style="background: #e8f5ee;">📍</div>
+        <span data-pl="Wizytówka Google" data-en="Google Business Profile">Wizytówka Google</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="contact-visual">
+    <div class="contact-name">Zuzanna Magoń-Buczek</div>
+    <div class="contact-bigname" data-pl="Excel<br>Specialist" data-en="Excel<br>Specialist">Excel<br>Specialist</div>
+    <div class="contact-tagline" data-pl="Przekształcam skomplikowane arkusze w proste, wydajne narzędzia dopasowane do Twojego biznesu." data-en="I turn complicated spreadsheets into simple, efficient tools tailored to your business.">Przekształcam skomplikowane arkusze w proste, wydajne narzędzia dopasowane do Twojego biznesu.</div>
+    <div class="contact-pill" data-pl="🇵🇱 Polska · 🌍 Worldwide" data-en="🇵🇱 Poland · 🌍 Worldwide">🇵🇱 Polska · 🌍 Worldwide</div>
+  </div>
+</section>
+
+<!-- CONTACT FORM -->
+<section class="form-section" id="formularz">
+  <div class="form-inner">
+
+    <div class="form-intro">
+      <div class="section-label" data-pl="Formularz kontaktowy" data-en="Contact form">Formularz kontaktowy</div>
+      <h2 class="section-title" data-pl="Opowiedz mi o swoim zadaniu" data-en="Tell me about your task">Opowiedz mi o swoim zadaniu</h2>
+      <p class="form-intro-desc" data-pl="Wypełnij formularz, a wrócę do Ciebie z propozycją rozwiązania i wyceną. Zazwyczaj odpowiadam w ciągu 24 godzin." data-en="Fill in the form and I'll get back to you with a solution proposal and quote. I usually respond within 24 hours.">Wypełnij formularz, a wrócę do Ciebie z propozycją rozwiązania i wyceną. Zazwyczaj odpowiadam w ciągu 24 godzin.</p>
+      <div class="form-info-item"><span>⏱️</span> <span data-pl="Odpowiedź w ciągu 24 godzin" data-en="Response within 24 hours">Odpowiedź w ciągu 24 godzin</span></div>
+      <div class="form-info-item"><span>💬</span> <span data-pl="Bezpłatna wycena" data-en="Free quote">Bezpłatna wycena</span></div>
+      <div class="form-info-item"><span>🌍</span> <span data-pl="Obsługuję klientów z całego świata" data-en="I work with clients worldwide">Obsługuję klientów z całego świata</span></div>
+    </div>
+
+    <div class="contact-form">
+      <div id="formBody">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" data-pl="Imię" data-en="First name">Imię</label>
+            <input class="form-input" type="text" id="fname" placeholder="Anna" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-pl="Email" data-en="Email">Email</label>
+            <input class="form-input" type="email" id="femail" placeholder="anna@firma.pl" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-pl="Czego potrzebujesz?" data-en="What do you need?">Czego potrzebujesz?</label>
+          <select class="form-select" id="fservice">
+            <option value="" data-pl="-- wybierz usługę --" data-en="-- select a service --">-- wybierz usługę --</option>
+            <option value="Automatyzacja" data-pl="Automatyzacja zadań" data-en="Task automation">Automatyzacja zadań</option>
+            <option value="Formuły" data-pl="Zaawansowane formuły" data-en="Advanced formulas">Zaawansowane formuły</option>
+            <option value="Formularze" data-pl="Formularze do danych" data-en="Data entry forms">Formularze do danych</option>
+            <option value="Wykresy/Dashboard" data-pl="Wykresy i dashboardy" data-en="Charts & dashboards">Wykresy i dashboardy</option>
+            <option value="Analiza danych" data-pl="Analiza danych" data-en="Data analysis">Analiza danych</option>
+            <option value="Excel + Google Sheets" data-pl="Integracja Excel + Google Sheets" data-en="Excel + Google Sheets integration">Integracja Excel + Google Sheets</option>
+            <option value="Inne" data-pl="Inne" data-en="Other">Inne</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" data-pl="Opis zadania" data-en="Task description">Opis zadania</label>
+          <textarea class="form-textarea" id="fmessage"
+            data-pl-placeholder="Opisz krótko, co chcesz usprawnić lub zautomatyzować w Excelu…"
+            data-en-placeholder="Briefly describe what you'd like to improve or automate in Excel…"
+            placeholder="Opisz krótko, co chcesz usprawnić lub zautomatyzować w Excelu…" required></textarea>
+        </div>
+
+        <button class="btn-submit" onclick="submitForm()">
+          <span data-pl="Wyślij zgłoszenie" data-en="Send inquiry">Wyślij zgłoszenie</span> ✉️
+        </button>
+        <div class="form-error-msg" id="formError" data-pl="Coś poszło nie tak. Napisz bezpośrednio na zuzanna.magon@gmail.com" data-en="Something went wrong. Please email zuzanna.magon@gmail.com directly.">Coś poszło nie tak. Napisz bezpośrednio na zuzanna.magon@gmail.com</div>
+      </div>
+
+      <div class="form-success" id="formSuccess">
+        <div class="form-success-icon">✅</div>
+        <div class="form-success-title" data-pl="Zgłoszenie wysłane!" data-en="Inquiry sent!">Zgłoszenie wysłane!</div>
+        <div class="form-success-desc" data-pl="Dziękuję! Odezwę się do Ciebie w ciągu 24 godzin z propozycją rozwiązania." data-en="Thank you! I'll get back to you within 24 hours with a solution proposal.">Dziękuję! Odezwę się do Ciebie w ciągu 24 godzin z propozycją rozwiązania.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Upraszczamy Excela</div>
+  <div class="footer-copy" data-pl="© 2025 Zuzanna Magoń-Buczek. Wszelkie prawa zastrzeżone." data-en="© 2025 Zuzanna Magoń-Buczek. All rights reserved.">© 2025 Zuzanna Magoń-Buczek. Wszelkie prawa zastrzeżone.</div>
+</footer>
+
+<script>
+  async function submitForm() {
+    const fname    = document.getElementById('fname').value.trim();
+    const femail   = document.getElementById('femail').value.trim();
+    const fservice = document.getElementById('fservice').value;
+    const fmessage = document.getElementById('fmessage').value.trim();
+    const errEl    = document.getElementById('formError');
+
+    if (!fname || !femail || !fmessage) {
+      errEl.style.display = 'block';
+      errEl.textContent = document.documentElement.lang === 'en'
+        ? 'Please fill in all required fields.'
+        : 'Uzupełnij wszystkie wymagane pola.';
+      return;
+    }
+
+    const btn = document.querySelector('.btn-submit');
+    btn.disabled = true;
+    btn.querySelector('span').textContent = document.documentElement.lang === 'en' ? 'Sending…' : 'Wysyłanie…';
+    errEl.style.display = 'none';
+
+    try {
+      const res = await fetch('https://formspree.io/f/zuzanna.magon@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          name: fname,
+          email: femail,
+          service: fservice,
+          message: fmessage
+        })
+      });
+
+      if (res.ok) {
+        document.getElementById('formBody').style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+      } else {
+        throw new Error('error');
+      }
+    } catch {
+      btn.disabled = false;
+      btn.querySelector('span').textContent = document.documentElement.lang === 'en' ? 'Send inquiry' : 'Wyślij zgłoszenie';
+      errEl.style.display = 'block';
+    }
+  }
+
+  function setLang(lang) {
+    document.querySelectorAll('[data-pl]').forEach(el => {
+      el.innerHTML = el.getAttribute('data-' + lang);
+    });
+    // placeholders
+    document.querySelectorAll('[data-pl-placeholder]').forEach(el => {
+      el.placeholder = el.getAttribute('data-' + lang + '-placeholder');
+    });
+    // select options
+    document.querySelectorAll('select option[data-pl]').forEach(opt => {
+      opt.textContent = opt.getAttribute('data-' + lang);
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+    document.documentElement.lang = lang;
+  }
+</script>
+
+</body>
+</html>
